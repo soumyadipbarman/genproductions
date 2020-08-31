@@ -90,10 +90,12 @@ make_gridpack () {
     MGBASEDIR=mgbasedir
     
     MG_EXT=".tar.gz"
-    MG=MG5_aMC_v2.7.3$MG_EXT
+    #MG=MG5_aMC_v2.7.3$MG_EXT
+    MG=MG5_aMC_v2.7.4$MG_EXT       #new version for MC@NLO-delta scheme placed locally
     ## MGSOURCE=https://cms-project-generators.web.cern.ch/cms-project-generators/$MG
-    MGSOURCE=https://launchpad.net/mg5amcnlo/2.0/2.7.x/+download/MG5_aMC_v2.7.3.tar.gz
-    
+    #MGSOURCE=https://launchpad.net/mg5amcnlo/2.0/2.7.x/+download/MG5_aMC_v2.7.3.tar.gz
+    MGSOURCE=/afs/cern.ch/work/s/sobarman/private/Package/Madgraph/files/MG5_aMC_v2.7.4.tar.gz       #new package is placed in the afs private area
+
     MGBASEDIRORIG=$(echo ${MG%$MG_EXT} | tr "." "_")
     isscratchspace=0
     
