@@ -217,6 +217,7 @@ make_gridpack () {
       echo "set auto_update 0" > mgconfigscript
       echo "set automatic_html_opening False" >> mgconfigscript
       echo "set auto_convert_model True" >> mgconfigscript
+      echo "set pythia8_path /afs/cern.ch/work/s/sobarman/public/MCatNLO_Delta/Pythia8/CMSSW_12_4_8/src/pythia8310" >> mgconfigscript
       if [ $iscmsconnect -gt 0 ]; then
         echo "set output_dependencies internal" >> mgconfigscript
       fi
@@ -266,7 +267,6 @@ make_gridpack () {
               isscratchspace=1
           fi      
       fi
-    
       echo "save options" >> mgconfigscript
     
       ./bin/mg5_aMC mgconfigscript
@@ -313,6 +313,7 @@ make_gridpack () {
       # are modified based on this parameter.
       echo "cluster_local_path = `${LHAPDFCONFIG} --datadir`" >> ./$MGBASEDIRORIG/input/mg5_configuration.txt 
       echo "lhapdf_py3 = $LHAPDFCONFIG" >> ./$MGBASEDIRORIG/input/mg5_configuration.txt
+      #echo "pythia8_path = /afs/cern.ch/work/s/sobarman/public/MCatNLO_Delta/Pythia8/CMSSW_12_4_8/src/pythia8310/bin/pythia8-config" >> ./$MGBASEDIRORIG/input/mg5_configuration.txt
     
       ########################
       #Run the code-generation step to create the process directory
@@ -363,7 +364,8 @@ make_gridpack () {
       # code-generation mg5_aMC execution, set it up again before the integrate step.
       echo "cluster_local_path = `${LHAPDFCONFIG} --datadir`" >> ./$MGBASEDIRORIG/input/mg5_configuration.txt
       echo "lhapdf_py3 = $LHAPDFCONFIG" >> ./$MGBASEDIRORIG/input/mg5_configuration.txt
-      
+      #echo "pythia8_path = /afs/cern.ch/work/s/sobarman/public/MCatNLO_Delta/Pythia8/CMSSW_12_4_8/src/pythia8310/bin/pythia8-config" >> ./$MGBASEDIRORIG/input/mg5_configuration.txt
+ 
       if [ -e $CARDSDIR/${name}_patch_me.sh ]; then
           echo "Patching generated matrix element code with " $CARDSDIR/${name}_patch_me.sh
           /bin/bash "$CARDSDIR/${name}_patch_me.sh" "$WORKDIR/$MGBASEDIRORIG"
