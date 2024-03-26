@@ -209,20 +209,34 @@ make_gridpack () {
         cp -r $CARDSDIR/BIAS/* $MGBASEDIRORIG/Template/LO/Source/BIAS
       fi
     
-      LHAPDFCONFIG=`echo "$LHAPDF_DATA_PATH/../../bin/lhapdf-config"`
-    
+      LHAPDFCONFIG=`echo "$LHAPDF_DATA_PATH/../../bin/lhapdf-config"` 
       LHAPDFINCLUDES=`$LHAPDFCONFIG --incdir`
       LHAPDFLIBS=`$LHAPDFCONFIG --libdir`
-    
+   
+      #PYTHIA8CONFIG=`echo "$PYTHIA8DATA/../../../bin/pythia8-config"`
+      #PYTHIA8INCLUDES=`$PYTHIA8CONFIG --includedir`
+      #PYTHIA8LIBS=`$PYTHIA8CONFIG --libdir`
+  	
+      #PYTHIA8CONFIG=`echo "/afs/cern.ch/work/s/sobarman/public/MCatNLO_Delta/Pythia8/CMSSW_13_2_9/src/pythia8309/bin/pythia8-config"`
+      #PYTHIA8INCLUDES=`echo "/afs/cern.ch/work/s/sobarman/public/MCatNLO_Delta/Pythia8/CMSSW_13_2_9/src/pythia8309/include"`
+      #PYTHIA8LIBS=`echo "/afs/cern.ch/work/s/sobarman/public/MCatNLO_Delta/Pythia8/CMSSW_13_2_9/src/pythia8309/lib"`
+
+      #PYTHIA8CONFIG=`echo "/cvmfs/cms.cern.ch/el9_amd64_gcc11/external/pythia8/309-c48e277ae4ccb32ab17f6e0b5f0c5d07/bin/pythia8-config"`
+      #PYTHIA8INCLUDES=`echo "/cvmfs/cms.cern.ch/el9_amd64_gcc11/external/pythia8/309-c48e277ae4ccb32ab17f6e0b5f0c5d07/include"`
+      #PYTHIA8LIBS=`echo "/cvmfs/cms.cern.ch/el9_amd64_gcc11/external/pythia8/309-c48e277ae4ccb32ab17f6e0b5f0c5d07/lib"`
+
       echo "set auto_update 0" > mgconfigscript
       echo "set automatic_html_opening False" >> mgconfigscript
+      #echo "set low_mem_multicore_nlo_generation True" >> mgconfigscript
       echo "set auto_convert_model True" >> mgconfigscript
-      echo "set pythia8_path /afs/cern.ch/work/s/sobarman/public/MCatNLO_Delta/Pythia8/CMSSW_12_4_8/src/pythia8310" >> mgconfigscript
       if [ $iscmsconnect -gt 0 ]; then
         echo "set output_dependencies internal" >> mgconfigscript
       fi
     #  echo "set output_dependencies internal" >> mgconfigscript
       echo "set lhapdf_py3 $LHAPDFCONFIG" >> mgconfigscript
+      echo "set pythia8_path /afs/cern.ch/work/s/sobarman/public/MCatNLO_Delta/Pythia8/CMSSW_12_4_8/src/pythia8309" >> mgconfigscript
+      #echo "set pythia8_path `${PYTHIA8CONFIG} --prefix`" >> mgconfigscript
+      #echo "set pythia8_path /cvmfs/cms.cern.ch/el9_amd64_gcc11/external/pythia8/309-c48e277ae4ccb32ab17f6e0b5f0c5d07" >> mgconfigscript
     #   echo "set ninja $PWD/HEPTools/lib" >> mgconfigscript
     
       if [ "$queue" == "local" ]; then
@@ -270,6 +284,7 @@ make_gridpack () {
       echo "save options" >> mgconfigscript
     
       ./bin/mg5_aMC mgconfigscript
+      #./bin/mg5_aMC install pythia8 --pythia8_tarball=/afs/cern.ch/work/s/sobarman/private/Package/Pythia/files/pythia8310.tgz
     
       #load extra models if needed
       if [ -e $CARDSDIR/${name}_extramodels.dat ]; then
@@ -312,15 +327,21 @@ make_gridpack () {
       # This needs to happen before the code-generation step, as fortran templates
       # are modified based on this parameter.
       echo "cluster_local_path = `${LHAPDFCONFIG} --datadir`" >> ./$MGBASEDIRORIG/input/mg5_configuration.txt 
+      #echo "cluster_local_path = `${PYTHIA8CONFIG} --datadir`" >> ./$MGBASEDIRORIG/input/mg5_configuration.txt
+      #echo "cluster_local_path = $PYTHIA8CONFIG" >> ./$MGBASEDIRORIG/input/mg5_configuration.txt
       echo "lhapdf_py3 = $LHAPDFCONFIG" >> ./$MGBASEDIRORIG/input/mg5_configuration.txt
-      #echo "pythia8_path = /afs/cern.ch/work/s/sobarman/public/MCatNLO_Delta/Pythia8/CMSSW_12_4_8/src/pythia8310/bin/pythia8-config" >> ./$MGBASEDIRORIG/input/mg5_configuration.txt
+      echo "set pythia8_path /afs/cern.ch/work/s/sobarman/public/MCatNLO_Delta/Pythia8/CMSSW_12_4_8/src/pythia8309" >> ./$MGBASEDIRORIG/input/mg5_configuration.txt
+      #echo "pythia8_path = `${PYTHIA8CONFIG} --prefix`" >> ./$MGBASEDIRORIG/input/mg5_configuration.txt
+      #echo "pythia8_path = /cvmfs/cms.cern.ch/el9_amd64_gcc11/external/pythia8/309-c48e277ae4ccb32ab17f6e0b5f0c5d07" >> ./$MGBASEDIRORIG/input/mg5_configuration.txt
     
       ########################
       #Run the code-generation step to create the process directory
       ########################
     
       sed -i '$ a display multiparticles' ${name}_proc_card.dat
-
+      #echo "Debug 1"
+      #mg5_aMC install pythia8 --pythia8_tarball=/afs/cern.ch/work/s/sobarman/private/Package/Pythia/files/pythia8310.tgz
+      #echo "Debug 2"
       #check if MadSTR plugin is needed (DR/DS removal,  https://arxiv.org/pdf/1907.04898.pdf)
       runMadSTR=`grep "istr" $CARDSDIR/${name}_run_card.dat | grep -v "#" |  cut -d  "="  -f 1`
       if [ -z ${runMadSTR} ] ; then
@@ -338,12 +359,15 @@ make_gridpack () {
 	  cp -r $PRODHOME/PLUGIN/MadSTR $MGBASEDIRORIG/PLUGIN/ # copy plugin 
           ./$MGBASEDIRORIG/bin/mg5_aMC --mode=MadSTR ${name}_proc_card.dat # run invoking MadSTR plugin
       fi
-	
+      #echo "Debug 3"
+      #install pythia8 --pythia8_tarball=/afs/cern.ch/work/s/sobarman/private/Package/Pythia/files/pythia8310.tgz	
+
       is5FlavorScheme=0
       if tail -n 999 $LOGFILE | grep -q -e "^p *=.*b\~.*b" -e "^p *=.*b.*b\~"; then 
         is5FlavorScheme=1
       fi
-    
+       #mg5_aMC install pythia8 --pythia8_tarball=/afs/cern.ch/work/s/sobarman/private/Package/Pythia/files/pythia8310.tgz
+       #echo "Debug 4" 
        #*FIXME* workaround for broken set cluster_queue and run_mode handling
        if [ "$queue" != "condor" ]; then
          echo "cluster_queue = $queue" >> ./$MGBASEDIRORIG/input/mg5_configuration.txt
@@ -363,8 +387,11 @@ make_gridpack () {
       # Previous settings get erased after
       # code-generation mg5_aMC execution, set it up again before the integrate step.
       echo "cluster_local_path = `${LHAPDFCONFIG} --datadir`" >> ./$MGBASEDIRORIG/input/mg5_configuration.txt
+      #echo "cluster_local_path = $PYTHIA8CONFIG" >> ./$MGBASEDIRORIG/input/mg5_configuration.txt
       echo "lhapdf_py3 = $LHAPDFCONFIG" >> ./$MGBASEDIRORIG/input/mg5_configuration.txt
-      #echo "pythia8_path = /afs/cern.ch/work/s/sobarman/public/MCatNLO_Delta/Pythia8/CMSSW_12_4_8/src/pythia8310/bin/pythia8-config" >> ./$MGBASEDIRORIG/input/mg5_configuration.txt
+      echo "set pythia8_path /afs/cern.ch/work/s/sobarman/public/MCatNLO_Delta/Pythia8/CMSSW_12_4_8/src/pythia8309" >> ./$MGBASEDIRORIG/input/mg5_configuration.txt
+      #echo "pythia8_path = `${PYTHIA8CONFIG} --prefix`" >> ./$MGBASEDIRORIG/input/mg5_configuration.txt
+      #echo "pythia8_path = /cvmfs/cms.cern.ch/el9_amd64_gcc11/external/pythia8/309-c48e277ae4ccb32ab17f6e0b5f0c5d07" >> ./$MGBASEDIRORIG/input/mg5_configuration.txt
  
       if [ -e $CARDSDIR/${name}_patch_me.sh ]; then
           echo "Patching generated matrix element code with " $CARDSDIR/${name}_patch_me.sh
@@ -414,9 +441,19 @@ make_gridpack () {
       fi
     
       #make sure env variable for pdfsets points to the right place
-      export LHAPDF_DATA_PATH=`$LHAPDFCONFIG --datadir`  
+      export LHAPDF_DATA_PATH=`$LHAPDFCONFIG --datadir`
+
+      #PYTHIA8CONFIG=`echo "/afs/cern.ch/work/s/sobarman/public/MCatNLO_Delta/Pythia8/CMSSW_13_2_9/src/pythia8309/bin/pythia8-config"`
+      #export PYTHIA8DATA=/afs/cern.ch/work/s/sobarman/public/MCatNLO_Delta/Pythia8/CMSSW_13_2_9/src/pythia8309/share/Pythia8
       
-    
+      #PYTHIA8CONFIG=`echo "/cvmfs/cms.cern.ch/el9_amd64_gcc11/external/pythia8/309-c48e277ae4ccb32ab17f6e0b5f0c5d07/bin/pythia8-config"`
+      #export PYTHIA8DATA=/cvmfs/cms.cern.ch/el9_amd64_gcc11/external/pythia8/309-c48e277ae4ccb32ab17f6e0b5f0c5d07/share/Pythia8
+
+      #PYTHIA8CONFIG=`echo "$PYTHIA8DATA/../../../bin/pythia8-config"` 
+      #export PYTHIA8=`$PYTHIA8CONFIG --prefix` 
+      #export PYTHIA8DATA=`$PYTHIA8CONFIG --xmldoc`
+      #export PYTHIA8DATA=`$PYTHIA8CONFIG --datadir`
+     
       if [ "$name" == "interactive" ]; then
         set +e
         set +u  
@@ -521,7 +558,15 @@ make_gridpack () {
       if [ -e $CARDSDIR/${name}_madspin_card.dat ]; then
         cp $CARDSDIR/${name}_madspin_card.dat ./Cards/madspin_card.dat
       fi
-      
+      #echo "Debug 5"
+      #echo "install pythia8 --pythia8_tarball=/afs/cern.ch/work/s/sobarman/private/Package/Pythia/files/pythia8310.tgz"
+      #install pythia8 /afs/cern.ch/work/s/sobarman/private/Package/Pythia/files/pythia8310.tgz
+      #install pythia8_tarball /afs/cern.ch/work/s/sobarman/private/Package/Pythia/files/pythia8310.tgz
+      #echo "install pythia8 --pythia8_tarball=/afs/cern.ch/work/s/sobarman/private/Package/Pythia/files/pythia8310.tgz"
+      #set pythia8_path /afs/cern.ch/work/s/sobarman/public/MCatNLO_Delta/Pythia8/CMSSW_11_3_0/src/pythia8310
+      #echo set pythia8_path /afs/cern.ch/work/s/sobarman/public/MCatNLO_Delta/Pythia8/CMSSW_12_4_8/src/pythia8310
+      #echo " set pythia8_path=/afs/cern.ch/work/s/sobarman/public/MCatNLO_Delta/Pythia8/CMSSW_12_4_8/src/pythia8310"
+      #echo "Debug 6"
       echo "shower=OFF" > makegrid.dat
       echo "reweight=OFF" >> makegrid.dat
       echo "done" >> makegrid.dat
@@ -713,7 +758,7 @@ else
     if [[ $SYSTEM_RELEASE == *"release 7"* ]]; then 
         scram_arch=slc7_amd64_gcc10 
     elif [[ $SYSTEM_RELEASE == *"release 8"* ]]; then
-        scram_arch=el8_amd64_gcc10
+        scram_arch=el8_amd64_gcc12
     elif [[ $SYSTEM_RELEASE == *"release 9"* ]]; then
         scram_arch=el9_amd64_gcc11
     else 
