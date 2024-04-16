@@ -209,9 +209,10 @@ make_gridpack () {
         cp -r $CARDSDIR/BIAS/* $MGBASEDIRORIG/Template/LO/Source/BIAS
       fi
     
-      LHAPDFCONFIG=`echo "$LHAPDF_DATA_PATH/../../bin/lhapdf-config"` 
-      LHAPDFINCLUDES=`$LHAPDFCONFIG --incdir`
-      LHAPDFLIBS=`$LHAPDFCONFIG --libdir`
+      #LHAPDFCONFIG=`echo "$LHAPDF_DATA_PATH/../../bin/lhapdf-config"`
+      #export PYTHONPATH=/cvmfs/cms.cern.ch/el9_amd64_gcc11/external/lhapdf/6.4.0-a1eec6e5fc67bd79ff44968065caf8fe/lib/python3.9/site-packages
+      #LHAPDFINCLUDES=`$LHAPDFCONFIG --incdir`
+      #LHAPDFLIBS=`$LHAPDFCONFIG --libdir`
    
       #PYTHIA8CONFIG=`echo "$PYTHIA8DATA/../../../bin/pythia8-config"`
       #PYTHIA8INCLUDES=`$PYTHIA8CONFIG --includedir`
@@ -227,14 +228,14 @@ make_gridpack () {
 
       echo "set auto_update 0" > mgconfigscript
       echo "set automatic_html_opening False" >> mgconfigscript
-      #echo "set low_mem_multicore_nlo_generation True" >> mgconfigscript
+      echo "set low_mem_multicore_nlo_generation True" >> mgconfigscript
       echo "set auto_convert_model True" >> mgconfigscript
       if [ $iscmsconnect -gt 0 ]; then
         echo "set output_dependencies internal" >> mgconfigscript
       fi
     #  echo "set output_dependencies internal" >> mgconfigscript
-      echo "set lhapdf_py3 $LHAPDFCONFIG" >> mgconfigscript
-      echo "set pythia8_path /afs/cern.ch/work/s/sobarman/public/MCatNLO_Delta/Pythia8/CMSSW_12_4_8/src/pythia8309" >> mgconfigscript
+      #echo "set lhapdf_py3 $LHAPDFCONFIG" >> mgconfigscript
+      #echo "set pythia8_path /afs/cern.ch/work/s/sobarman/public/MCatNLO_Delta/Pythia8/CMSSW_12_4_8/src/pythia8309" >> mgconfigscript
       #echo "set pythia8_path `${PYTHIA8CONFIG} --prefix`" >> mgconfigscript
       #echo "set pythia8_path /cvmfs/cms.cern.ch/el9_amd64_gcc11/external/pythia8/309-c48e277ae4ccb32ab17f6e0b5f0c5d07" >> mgconfigscript
     #   echo "set ninja $PWD/HEPTools/lib" >> mgconfigscript
@@ -281,9 +282,12 @@ make_gridpack () {
               isscratchspace=1
           fi      
       fi
-      echo "save options" >> mgconfigscript
-    
-      ./bin/mg5_aMC mgconfigscript
+      echo "install lhapdf6" >> mgconfigscript
+      echo "install pythia8 --pythia8_tarball=/afs/cern.ch/work/s/sobarman/private/Package/Pythia/files/pythia8310.tgz" >> mgconfigscript
+      echo "save options --all" >> mgconfigscript
+      
+      ./bin/mg5_aMC --debug mgconfigscript
+      
       #./bin/mg5_aMC install pythia8 --pythia8_tarball=/afs/cern.ch/work/s/sobarman/private/Package/Pythia/files/pythia8310.tgz
     
       #load extra models if needed
@@ -326,11 +330,11 @@ make_gridpack () {
       #*FIXME* workaround for broken cluster_local_path & lhapdf_py3 handling.
       # This needs to happen before the code-generation step, as fortran templates
       # are modified based on this parameter.
-      echo "cluster_local_path = `${LHAPDFCONFIG} --datadir`" >> ./$MGBASEDIRORIG/input/mg5_configuration.txt 
+      #echo "cluster_local_path = `${LHAPDFCONFIG} --datadir`" >> ./$MGBASEDIRORIG/input/mg5_configuration.txt 
       #echo "cluster_local_path = `${PYTHIA8CONFIG} --datadir`" >> ./$MGBASEDIRORIG/input/mg5_configuration.txt
       #echo "cluster_local_path = $PYTHIA8CONFIG" >> ./$MGBASEDIRORIG/input/mg5_configuration.txt
-      echo "lhapdf_py3 = $LHAPDFCONFIG" >> ./$MGBASEDIRORIG/input/mg5_configuration.txt
-      echo "set pythia8_path /afs/cern.ch/work/s/sobarman/public/MCatNLO_Delta/Pythia8/CMSSW_12_4_8/src/pythia8309" >> ./$MGBASEDIRORIG/input/mg5_configuration.txt
+      #echo "lhapdf_py3 = $LHAPDFCONFIG" >> ./$MGBASEDIRORIG/input/mg5_configuration.txt
+      #echo "set pythia8_path /afs/cern.ch/work/s/sobarman/public/MCatNLO_Delta/Pythia8/CMSSW_12_4_8/src/pythia8309" >> ./$MGBASEDIRORIG/input/mg5_configuration.txt
       #echo "pythia8_path = `${PYTHIA8CONFIG} --prefix`" >> ./$MGBASEDIRORIG/input/mg5_configuration.txt
       #echo "pythia8_path = /cvmfs/cms.cern.ch/el9_amd64_gcc11/external/pythia8/309-c48e277ae4ccb32ab17f6e0b5f0c5d07" >> ./$MGBASEDIRORIG/input/mg5_configuration.txt
     
@@ -386,10 +390,11 @@ make_gridpack () {
     
       # Previous settings get erased after
       # code-generation mg5_aMC execution, set it up again before the integrate step.
-      echo "cluster_local_path = `${LHAPDFCONFIG} --datadir`" >> ./$MGBASEDIRORIG/input/mg5_configuration.txt
+      #echo "cluster_local_path = `${LHAPDFCONFIG} --datadir`" >> ./$MGBASEDIRORIG/input/mg5_configuration.txt
       #echo "cluster_local_path = $PYTHIA8CONFIG" >> ./$MGBASEDIRORIG/input/mg5_configuration.txt
-      echo "lhapdf_py3 = $LHAPDFCONFIG" >> ./$MGBASEDIRORIG/input/mg5_configuration.txt
-      echo "set pythia8_path /afs/cern.ch/work/s/sobarman/public/MCatNLO_Delta/Pythia8/CMSSW_12_4_8/src/pythia8309" >> ./$MGBASEDIRORIG/input/mg5_configuration.txt
+      #echo "lhapdf_py3 = $LHAPDFCONFIG" >> ./$MGBASEDIRORIG/input/mg5_configuration.txt
+       echo "set pythia8_path /afs/cern.ch/work/s/sobarman/private/Generator/genproductions/bin/MadGraph5_aMCatNLO/dyee01j_5f_NLO_FXFX/dyee01j_5f_NLO_FXFX_gridpack/work/MG5_aMC_v3_5_2/HEPTools/pythia8" >> ./$MGBASEDIRORIG/input/mg5_configuration.txt
+      #echo "set pythia8_path /afs/cern.ch/work/s/sobarman/public/MCatNLO_Delta/Pythia8/CMSSW_12_4_8/src/pythia8309" >> ./$MGBASEDIRORIG/input/mg5_configuration.txt
       #echo "pythia8_path = `${PYTHIA8CONFIG} --prefix`" >> ./$MGBASEDIRORIG/input/mg5_configuration.txt
       #echo "pythia8_path = /cvmfs/cms.cern.ch/el9_amd64_gcc11/external/pythia8/309-c48e277ae4ccb32ab17f6e0b5f0c5d07" >> ./$MGBASEDIRORIG/input/mg5_configuration.txt
  
@@ -433,15 +438,15 @@ make_gridpack () {
       fi
 
       #if lhapdf6 external is available then above points to lhapdf5 and needs to be overridden
-      LHAPDF6TOOLFILE=$CMSSW_BASE/config/toolbox/$SCRAM_ARCH/tools/available/lhapdf6.xml
-      if [ -e $LHAPDF6TOOLFILE ]; then
-        LHAPDFCONFIG=`cat $LHAPDF6TOOLFILE | grep "<environment name=\"LHAPDF6_BASE\"" | cut -d \" -f 4`/bin/lhapdf-config
-      else
-        LHAPDFCONFIG=`echo "$LHAPDF_DATA_PATH/../../bin/lhapdf-config"`
-      fi
-    
+      #LHAPDF6TOOLFILE=$CMSSW_BASE/config/toolbox/$SCRAM_ARCH/tools/available/lhapdf6.xml
+      #if [ -e $LHAPDF6TOOLFILE ]; then
+        #LHAPDFCONFIG=`cat $LHAPDF6TOOLFILE | grep "<environment name=\"LHAPDF6_BASE\"" | cut -d \" -f 4`/bin/lhapdf-config
+      #else
+        #LHAPDFCONFIG=`echo "$LHAPDF_DATA_PATH/../../bin/lhapdf-config"`
+      #fi
+  
       #make sure env variable for pdfsets points to the right place
-      export LHAPDF_DATA_PATH=`$LHAPDFCONFIG --datadir`
+      #export LHAPDF_DATA_PATH=`$LHAPDFCONFIG --datadir`
 
       #PYTHIA8CONFIG=`echo "/afs/cern.ch/work/s/sobarman/public/MCatNLO_Delta/Pythia8/CMSSW_13_2_9/src/pythia8309/bin/pythia8-config"`
       #export PYTHIA8DATA=/afs/cern.ch/work/s/sobarman/public/MCatNLO_Delta/Pythia8/CMSSW_13_2_9/src/pythia8309/share/Pythia8
@@ -646,13 +651,13 @@ make_gridpack () {
       
       echo "cleaning temporary output"
       mv $WORKDIR/processtmp/pilotrun_gridpack.tar.gz $WORKDIR/
-      rm -rf processtmp
+      #rm -rf processtmp
       mkdir process
       cd process
       echo "unpacking temporary gridpack"
       tar -xzf $WORKDIR/pilotrun_gridpack.tar.gz
-      echo "cleaning temporary gridpack"
-      rm $WORKDIR/pilotrun_gridpack.tar.gz
+      #echo "cleaning temporary gridpack"
+      #rm $WORKDIR/pilotrun_gridpack.tar.gz
 
       # as of mg29x, it does not generate any event if 'True = gridpack' in the run card
       # generate a few events manually
