@@ -249,7 +249,8 @@ make_gridpack () {
       fi
     #  echo "set output_dependencies internal" >> mgconfigscript
       echo "set lhapdf_py3 $LHAPDFCONFIG" >> mgconfigscript
-      echo "set pythia8_path /afs/cern.ch/work/s/sobarman/public/Package/Pythia/Pythia8310/CMSSW_12_4_8/src/pythia8310" >> mgconfigscript
+      echo "set pythia8_path /afs/cern.ch/work/s/sobarman/public/Package/Pythia/Pythia8309/CMSSW_12_4_8/src/pythia8309" >> mgconfigscript
+      #echo "set pythia8_path /cvmfs/cms.cern.ch/el8_amd64_gcc12/external/pythia8/309-d0cc659066c4ce30e87773cccde7738d" >> mgconfigscript
       #echo "set mg5amc_py8_interface_path /afs/cern.ch/work/s/sobarman/public/Package/MG5amcPY8/MG5aMC_PY8_interface" >> mgconfigscript
     #   echo "set ninja $PWD/HEPTools/lib" >> mgconfigscript
     
@@ -353,7 +354,8 @@ make_gridpack () {
       # are modified based on this parameter.
       echo "cluster_local_path = `${LHAPDFCONFIG} --datadir`" >> ./$MGBASEDIRORIG/input/mg5_configuration.txt 
       echo "lhapdf_py3 = $LHAPDFCONFIG" >> ./$MGBASEDIRORIG/input/mg5_configuration.txt
-      echo "pythia8_path = /afs/cern.ch/work/s/sobarman/public/Package/Pythia/Pythia8310/CMSSW_12_4_8/src/pythia8310" >> ./$MGBASEDIRORIG/input/mg5_configuration.txt
+      echo "pythia8_path = /afs/cern.ch/work/s/sobarman/public/Package/Pythia/Pythia8309/CMSSW_12_4_8/src/pythia8309" >> ./$MGBASEDIRORIG/input/mg5_configuration.txt
+      #echo "pythia8_path = /cvmfs/cms.cern.ch/el8_amd64_gcc12/external/pythia8/309-d0cc659066c4ce30e87773cccde7738d" >> ./$MGBASEDIRORIG/input/mg5_configuration.txt
       #echo "mg5amc_py8_interface_path = /afs/cern.ch/work/s/sobarman/public/Package/MG5amcPY8/MG5aMC_PY8_interface" >> ./$MGBASEDIRORIG/input/mg5_configuration.txt
     
       ########################
@@ -405,7 +407,8 @@ make_gridpack () {
       # code-generation mg5_aMC execution, set it up again before the integrate step.
       echo "cluster_local_path = `${LHAPDFCONFIG} --datadir`" >> ./$MGBASEDIRORIG/input/mg5_configuration.txt
       echo "lhapdf_py3 = $LHAPDFCONFIG" >> ./$MGBASEDIRORIG/input/mg5_configuration.txt
-      echo "pythia8_path = /afs/cern.ch/work/s/sobarman/public/Package/Pythia/Pythia8310/CMSSW_12_4_8/src/pythia8310" >> ./$MGBASEDIRORIG/input/mg5_configuration.txt
+      echo "pythia8_path = /afs/cern.ch/work/s/sobarman/public/Package/Pythia/Pythia8309/CMSSW_12_4_8/src/pythia8309" >> ./$MGBASEDIRORIG/input/mg5_configuration.txt
+      #echo "pythia8_path = /cvmfs/cms.cern.ch/el8_amd64_gcc12/external/pythia8/309-d0cc659066c4ce30e87773cccde7738d" >> ./$MGBASEDIRORIG/input/mg5_configuration.txt
       #echo "mg5amc_py8_interface_path = /afs/cern.ch/work/s/sobarman/public/Package/MG5amcPY8/MG5aMC_PY8_interface" >> ./$MGBASEDIRORIG/input/mg5_configuration.txt
 
       if [ -e $CARDSDIR/${name}_patch_me.sh ]; then
@@ -564,7 +567,8 @@ make_gridpack () {
         cp $CARDSDIR/${name}_madspin_card.dat ./Cards/madspin_card.dat
       fi
      
-      echo "pythia8_path = /afs/cern.ch/work/s/sobarman/public/Package/Pythia/Pythia8310/CMSSW_12_4_8/src/pythia8310" >> ./Cards/amcatnlo_configuration.txt 
+      echo "pythia8_path = /afs/cern.ch/work/s/sobarman/public/Package/Pythia/Pythia8309/CMSSW_12_4_8/src/pythia8309" >> ./Cards/amcatnlo_configuration.txt
+      #echo "pythia8_path = /cvmfs/cms.cern.ch/el8_amd64_gcc12/external/pythia8/309-d0cc659066c4ce30e87773cccde7738d" >> ./Cards/amcatnlo_configuration.txt
       echo "shower=OFF" > makegrid.dat
       echo "reweight=OFF" >> makegrid.dat
       echo "done" >> makegrid.dat
@@ -593,7 +597,8 @@ make_gridpack () {
       fi
       
       echo "mg5_path = ../mgbasedir" >> ./Cards/amcatnlo_configuration.txt
-      echo "pythia8_path = /afs/cern.ch/work/s/sobarman/public/Package/Pythia/Pythia8310/CMSSW_12_4_8/src/pythia8310" >> ./Cards/amcatnlo_configuration.txt
+      echo "pythia8_path = /afs/cern.ch/work/s/sobarman/public/Package/Pythia/Pythia8309/CMSSW_12_4_8/src/pythia8309" >> ./Cards/amcatnlo_configuration.txt
+      #echo "pythia8_path = /cvmfs/cms.cern.ch/el8_amd64_gcc12/external/pythia8/309-d0cc659066c4ce30e87773cccde7738d" >> ./Cards/amcatnlo_configuration.txt
     #   echo "ninja = ../mgbasedir/HEPTools/lib" >> ./Cards/amcatnlo_configuration.txt
       echo "cluster_temp_path = None" >> ./Cards/amcatnlo_configuration.txt
     
